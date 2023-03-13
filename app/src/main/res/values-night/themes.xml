@@ -6,17 +6,17 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/green</item>
         <!-- Full Background -->
-        <item name="colorPrimaryVariant">@color/white</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/pureWhite</item>
+        <item name="colorOnPrimary">@color/pureWhite</item>
 
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/green</item>
         <!-- Toolbar -->
-        <item name="colorSecondaryVariant">@color/whiteFake</item>
+        <item name="colorSecondaryVariant">@color/white</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:navigationBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:navigationBarColor">@color/pureWhite</item>
         <!-- Customize your theme here. -->
         <item name="fontFamily">@font/poppins</item>
     </style>
