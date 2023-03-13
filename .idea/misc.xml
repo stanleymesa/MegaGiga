@@ -3,14 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/github/MegaGiga/app/src/main/res/drawable/ic_baseline_arrow_back_ios_new_24.xml" value="0.14" />
         <entry key="..\:/github/MegaGiga/app/src/main/res/drawable/tablayout_background.xml" value="0.135" />
         <entry key="..\:/github/MegaGiga/app/src/main/res/font/poppins.xml" value="0.25" />
+        <entry key="..\:/github/MegaGiga/app/src/main/res/layout/activity_home.xml" value="0.264" />
         <entry key="..\:/github/MegaGiga/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/github/MegaGiga/app/src/main/res/layout/activity_main.xml" value="0.536" />
+        <entry key="..\:/github/MegaGiga/app/src/main/res/layout/custom_toolbar.xml" value="0.2421875" />
         <entry key="..\:/github/MegaGiga/app/src/main/res/layout/fragment_login.xml" value="0.2" />
+        <entry key="..\:/github/MegaGiga/app/src/main/res/layout/fragment_product.xml" value="0.228125" />
         <entry key="..\:/github/MegaGiga/app/src/main/res/layout/fragment_register.xml" value="0.2421875" />
+        <entry key="..\:/github/MegaGiga/app/src/main/res/layout/fragment_supplier.xml" value="0.2421875" />
+        <entry key="..\:/github/MegaGiga/core/src/main/res/drawable/ic_baseline_home_24.xml" value="0.14" />
+        <entry key="..\:/github/MegaGiga/core/src/main/res/drawable/ic_baseline_local_phone_24.xml" value="0.14" />
+        <entry key="..\:/github/MegaGiga/core/src/main/res/drawable/ic_baseline_person_24.xml" value="0.14" />
         <entry key="..\:/github/MegaGiga/core/src/main/res/font/poppins.xml" value="0.25" />
         <entry key="..\:/github/MegaGiga/core/src/main/res/layout/activity_main.xml" value="0.2421875" />
+        <entry key="..\:/github/MegaGiga/core/src/main/res/layout/item_row_product.xml" value="0.264" />
+        <entry key="..\:/github/MegaGiga/core/src/main/res/layout/item_row_supplier.xml" value="0.2421875" />
       </map>
     </option>
   </component>
