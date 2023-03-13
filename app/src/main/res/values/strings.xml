@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">MegaGiga</string>
+    <string name="mega">Mega</string>
+    <string name="giga">Giga</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="name">Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="confirmation_password">Confirmation Password</string>
+    <string name="register">Register</string>
 </resources>
