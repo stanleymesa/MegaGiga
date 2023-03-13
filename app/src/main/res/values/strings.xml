@@ -2,11 +2,15 @@
     <string name="app_name">MegaGiga</string>
     <string name="mega">Mega</string>
     <string name="giga">Giga</string>
+    <string name="megagiga">MegaGiga</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="username">Username</string>
     <string name="profile_name">Profile Name</string>
+    <string name="image">image</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
+    <string name="product">Product</string>
+    <string name="supplier">Supplier</string>
 </resources>
