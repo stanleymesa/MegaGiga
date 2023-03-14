@@ -1,12 +1,18 @@
 package com.stanleymesa.core.data.source.remote
 
-import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.stanleymesa.core.data.Resource
+import com.stanleymesa.core.data.paging.ProductPagingSource
+import com.stanleymesa.core.data.paging.SupplierPagingSource
 import com.stanleymesa.core.data.source.remote.network.ApiServices
 import com.stanleymesa.core.domain.body.LoginBody
 import com.stanleymesa.core.domain.body.RegisterBody
 import com.stanleymesa.core.domain.model.Login
+import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Register
+import com.stanleymesa.core.domain.model.Supplier
 import com.stanleymesa.core.utlis.DataMapper
 import com.stanleymesa.core.utlis.LOGIN_SUCCESS
 import com.stanleymesa.core.utlis.REGISTER_SUCCESS
@@ -19,7 +25,7 @@ import javax.inject.Singleton
 @Singleton
 class RemoteDataSource @Inject constructor(
     private val apiServices: ApiServices,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
 ) {
 
     fun login(loginBody: LoginBody): Flow<Resource<Login>> = flow {
@@ -67,5 +73,21 @@ class RemoteDataSource @Inject constructor(
             emit(Resource.Error(message = ex.message ?: "Something went wrong, can't register"))
         }
     }
+
+    fun getProduct(token: String): Flow<PagingData<Product>> =
+        Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = {
+                ProductPagingSource(token, apiServices)
+            }
+        ).flow
+
+    fun getSupplier(token: String): Flow<PagingData<Supplier>> =
+        Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = {
+                SupplierPagingSource(token, apiServices)
+            }
+        ).flow
 
 }

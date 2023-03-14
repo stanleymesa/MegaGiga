@@ -17,7 +17,7 @@ data class LoginResponse(
 data class Data(
 
 	@field:SerializedName("profileName")
-	val profileName: String,
+	val profileName: String?,
 
 	@field:SerializedName("id")
 	val id: Int,

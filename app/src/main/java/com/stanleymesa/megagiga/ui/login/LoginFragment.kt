@@ -107,7 +107,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
                             is Resource.Success -> {
                                 resource.data?.let { login ->
-                                    Log.e("LOGIN SUCCESS", login.toString())
+                                    viewModel.saveToken(login.token)
                                 }
                                 viewModel.setLoading(false)
                                 startActivity(Intent(requireActivity(), HomeActivity::class.java))
