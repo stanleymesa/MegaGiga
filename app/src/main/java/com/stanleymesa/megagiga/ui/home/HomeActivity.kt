@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.stanleymesa.megagiga.R
 import com.stanleymesa.megagiga.databinding.ActivityHomeBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
 
     private var _binding: ActivityHomeBinding? = null

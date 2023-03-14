@@ -11,3 +11,15 @@ fun Context.getColorFromAttr(@AttrRes attrColor: Int): Int {
     theme.resolveAttribute(attrColor, typedValue, true)
     return typedValue.data
 }
+
+fun String.tokenFormat(): String {
+    return "Bearer $this"
+}
+
+fun Int.toPixel(context: Context): Int {
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        this.toFloat(),
+        context.resources.displayMetrics
+    ).toInt()
+}

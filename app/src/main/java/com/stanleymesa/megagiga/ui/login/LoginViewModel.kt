@@ -20,6 +20,9 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
             Event(it)
         }
 
+    fun saveToken(token: String) =
+        loginUseCase.saveToken(token)
+
     fun setLoading(isLoading: Boolean) =
         _isLoading.postValue(Event(isLoading))
 
