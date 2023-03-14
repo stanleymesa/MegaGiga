@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             when (position) {
-                0 -> tab.text = resources.getString(R.string.login)
+                0 -> tab.text = getString(R.string.login)
                 1 -> tab.text = getString(R.string.register)
             }
         }.attach()
