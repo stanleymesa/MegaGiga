@@ -32,4 +32,8 @@ abstract class AppModule {
     @ViewModelScoped
     abstract fun provideCreateProductUseCase(interactor: Interactor): CreateProductUseCase
 
+    @Binds
+    @ViewModelScoped
+    abstract fun provideUpdateProductUseCase(interactor: Interactor): UpdateProductUseCase
+
 }

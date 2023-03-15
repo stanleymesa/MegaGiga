@@ -2,6 +2,7 @@ package com.stanleymesa.megagiga.ui.supplier
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,7 @@ import androidx.core.view.isVisible
 import com.stanleymesa.core.domain.model.Supplier
 import com.stanleymesa.core.ui.ChooseSupplierAdapter
 import com.stanleymesa.core.utlis.*
+import com.stanleymesa.megagiga.R
 import com.stanleymesa.megagiga.databinding.ActivitySupplierBinding
 import com.stanleymesa.megagiga.ui.home.SupplierViewModel
 import com.stanleymesa.megagiga.ui.login.LoginActivity
@@ -16,7 +18,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SupplierActivity : AppCompatActivity(),
-    LoadingStateAdapter.OnPagingErrorCallback, ChooseSupplierAdapter.OnSupplierClickCallback {
+    LoadingStateAdapter.OnPagingErrorCallback, ChooseSupplierAdapter.OnSupplierClickCallback,
+    View.OnClickListener {
 
     private var _binding: ActivitySupplierBinding? = null
     private val binding get() = _binding!!
@@ -36,6 +39,7 @@ class SupplierActivity : AppCompatActivity(),
         binding.toolbar.tvTitle.text = "Choose Supplier"
         setAdapter()
         observeData()
+        binding.toolbar.ivBack.setOnClickListener(this)
     }
 
     private fun observeData() {
@@ -78,6 +82,12 @@ class SupplierActivity : AppCompatActivity(),
         intent.putExtra(INTENT_SUPPLIER, supplier)
         setResult(GET_SUPPLIER, intent)
         finish()
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.iv_back -> finish()
+        }
     }
 
 }

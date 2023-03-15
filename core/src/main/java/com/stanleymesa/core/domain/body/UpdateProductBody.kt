@@ -2,7 +2,7 @@ package com.stanleymesa.core.domain.body
 
 import com.google.gson.annotations.SerializedName
 
-data class CreateProductBody(
+data class UpdateProductBody(
 
     @field:SerializedName("namaBarang")
     val namaBarang: String,

@@ -5,6 +5,7 @@ import com.stanleymesa.core.data.Resource
 import com.stanleymesa.core.domain.body.CreateProductBody
 import com.stanleymesa.core.domain.body.LoginBody
 import com.stanleymesa.core.domain.body.RegisterBody
+import com.stanleymesa.core.domain.body.UpdateProductBody
 import com.stanleymesa.core.domain.model.Login
 import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Register
@@ -17,7 +18,7 @@ import javax.inject.Singleton
 
 @Singleton
 class Interactor @Inject constructor(private val repository: IRepository) : LoginUseCase,
-    RegisterUseCase, ProductUseCase, SupplierUseCase, CreateProductUseCase {
+    RegisterUseCase, ProductUseCase, SupplierUseCase, CreateProductUseCase, UpdateProductUseCase {
 
     override fun login(loginBody: LoginBody): Flow<Resource<Login>> =
         repository.login(loginBody)
@@ -39,6 +40,13 @@ class Interactor @Inject constructor(private val repository: IRepository) : Logi
         createProductBody: CreateProductBody,
     ): Flow<Resource<String>> =
         repository.createProduct(token, createProductBody)
+
+    override fun updateProduct(
+        token: String,
+        productId: Int,
+        updateProductBody: UpdateProductBody,
+    ): Flow<Resource<String>> =
+        repository.updateProduct(token, productId, updateProductBody)
 
     override fun getToken(): Flow<String> =
         repository.getToken()
