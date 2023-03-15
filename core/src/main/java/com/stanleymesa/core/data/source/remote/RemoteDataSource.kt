@@ -7,16 +7,14 @@ import com.stanleymesa.core.data.Resource
 import com.stanleymesa.core.data.paging.ProductPagingSource
 import com.stanleymesa.core.data.paging.SupplierPagingSource
 import com.stanleymesa.core.data.source.remote.network.ApiServices
+import com.stanleymesa.core.domain.body.CreateProductBody
 import com.stanleymesa.core.domain.body.LoginBody
 import com.stanleymesa.core.domain.body.RegisterBody
 import com.stanleymesa.core.domain.model.Login
 import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Register
 import com.stanleymesa.core.domain.model.Supplier
-import com.stanleymesa.core.utlis.DataMapper
-import com.stanleymesa.core.utlis.LOGIN_SUCCESS
-import com.stanleymesa.core.utlis.REGISTER_SUCCESS
-import kotlinx.coroutines.CoroutineScope
+import com.stanleymesa.core.utlis.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -25,7 +23,6 @@ import javax.inject.Singleton
 @Singleton
 class RemoteDataSource @Inject constructor(
     private val apiServices: ApiServices,
-    private val coroutineScope: CoroutineScope,
 ) {
 
     fun login(loginBody: LoginBody): Flow<Resource<Login>> = flow {
@@ -89,5 +86,29 @@ class RemoteDataSource @Inject constructor(
                 SupplierPagingSource(token, apiServices)
             }
         ).flow
+
+    fun createProduct(token: String, createProductBody: CreateProductBody): Flow<Resource<String>> =
+        flow {
+            emit(Resource.Loading())
+            try {
+                val request = apiServices.createProduct(token, createProductBody)
+                if (request.isSuccessful) {
+                    request.body()?.let { response ->
+                        if (response.status == STATUS_OK && response.data != null)
+                            emit(Resource.Success(response.message))
+                        else
+                            emit(Resource.Error("Something went wrong, can't create product"))
+                    }
+                } else {
+                    if (request.code() == STATUS_UNAUTHORIZED)
+                        emit(Resource.Error(request.code().toString()))
+                    else
+                        emit(Resource.Error("Something went wrong, can't create product"))
+                }
+
+            } catch (ex: Exception) {
+                emit(Resource.Error(ex.message ?: "Something went wrong, can't create product"))
+            }
+        }
 
 }

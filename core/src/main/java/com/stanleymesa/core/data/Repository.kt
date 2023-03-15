@@ -3,6 +3,7 @@ package com.stanleymesa.core.data
 import androidx.paging.PagingData
 import com.stanleymesa.core.data.source.local.LocalDataSource
 import com.stanleymesa.core.data.source.remote.RemoteDataSource
+import com.stanleymesa.core.domain.body.CreateProductBody
 import com.stanleymesa.core.domain.body.LoginBody
 import com.stanleymesa.core.domain.body.RegisterBody
 import com.stanleymesa.core.domain.model.Login
@@ -48,5 +49,11 @@ class Repository @Inject constructor(
             localDataSource.saveToken(token)
         }
     }
+
+    override fun createProduct(
+        token: String,
+        createProductBody: CreateProductBody,
+    ): Flow<Resource<String>> =
+        remoteDataSource.createProduct(token, createProductBody)
 
 }

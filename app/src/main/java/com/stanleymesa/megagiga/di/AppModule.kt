@@ -1,10 +1,7 @@
 package com.stanleymesa.megagiga.di
 
 import com.stanleymesa.core.domain.interactor.Interactor
-import com.stanleymesa.core.domain.usecase.LoginUseCase
-import com.stanleymesa.core.domain.usecase.ProductUseCase
-import com.stanleymesa.core.domain.usecase.RegisterUseCase
-import com.stanleymesa.core.domain.usecase.SupplierUseCase
+import com.stanleymesa.core.domain.usecase.*
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -30,5 +27,9 @@ abstract class AppModule {
     @Binds
     @ViewModelScoped
     abstract fun provideSupplierUseCase(interactor: Interactor): SupplierUseCase
+
+    @Binds
+    @ViewModelScoped
+    abstract fun provideCreateProductUseCase(interactor: Interactor): CreateProductUseCase
 
 }
