@@ -1,4 +1,4 @@
-package com.stanleymesa.megagiga.ui.create
+package com.stanleymesa.megagiga.ui.update
 
 import android.content.Context
 import android.content.Intent
@@ -12,41 +12,64 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import com.stanleymesa.core.data.Resource
-import com.stanleymesa.core.domain.body.CreateProductBody
 import com.stanleymesa.core.domain.body.SupplierBody
+import com.stanleymesa.core.domain.body.UpdateProductBody
+import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Supplier
 import com.stanleymesa.core.utlis.*
 import com.stanleymesa.megagiga.R
-import com.stanleymesa.megagiga.databinding.ActivityCreateProductBinding
+import com.stanleymesa.megagiga.databinding.ActivityUpdateProductBinding
 import com.stanleymesa.megagiga.ui.login.LoginActivity
 import com.stanleymesa.megagiga.ui.supplier.SupplierActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CreateProductActivity : AppCompatActivity(), View.OnClickListener {
+class UpdateProductActivity : AppCompatActivity(), View.OnClickListener {
 
-    private var _binding: ActivityCreateProductBinding? = null
+    private var _binding: ActivityUpdateProductBinding? = null
     private val binding get() = _binding!!
-    private var isAddSupplier = false
-    private var supplier: Supplier? = null
     private var token = ""
-    private val viewModel: CreateProductViewModel by viewModels()
+    private var supplier: Supplier? = null
+    private var productId = 0
+    private val viewModel: UpdateProductViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityCreateProductBinding.inflate(layoutInflater)
+        _binding = ActivityUpdateProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         init()
     }
 
     private fun init() {
+        getIntentProduct()
         observeData()
-        binding.toolbar.tvTitle.text = "Create Product"
+        binding.toolbar.tvTitle.text = "Update Product"
         binding.toolbar.ivBack.isVisible = true
-        binding.btnCreate.setOnClickListener(this)
+        binding.btnUpdate.setOnClickListener(this)
         binding.layoutSupplier.setOnClickListener(this)
         binding.toolbar.ivBack.setOnClickListener(this)
+    }
+
+    private fun getIntentProduct() {
+        val productIntent = intent.getParcelableExtra<Product>(INTENT_PRODUCT)
+        productIntent?.let { product ->
+            this.productId = product.id
+            binding.etProductName.setText(product.namaBarang)
+            binding.etPrice.setText(product.harga.toInt().toString())
+            binding.etStock.setText(product.stok.toString())
+
+            product.supplier?.let { supplier ->
+                this.supplier = supplier
+                binding.contentSupplier.apply {
+                    root.isVisible = true
+                    tvId.text = supplier.id.toString()
+                    tvSupplierName.text = supplier.namaSupplier
+                    tvSupplierHome.text = supplier.alamat
+                    tvSupplierPhone.text = supplier.noTelp
+                }
+            }
+        }
     }
 
     private fun observeData() {
@@ -70,7 +93,6 @@ class CreateProductActivity : AppCompatActivity(), View.OnClickListener {
                 val supplier = result.data?.getParcelableExtra<Supplier>(INTENT_SUPPLIER)
                 supplier?.let {
                     this.supplier = it
-                    this.isAddSupplier = true
                     binding.contentSupplier.apply {
                         root.isVisible = true
                         tvId.text = it.id.toString()
@@ -87,7 +109,6 @@ class CreateProductActivity : AppCompatActivity(), View.OnClickListener {
             binding.etProductName.text.toString().isNotEmpty() &&
             binding.etPrice.text.toString().isNotEmpty() &&
             binding.etStock.text.toString().isNotEmpty() &&
-            this.isAddSupplier &&
             this.supplier != null &&
             this.token.isNotEmpty()
         ) {
@@ -103,7 +124,7 @@ class CreateProductActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.btn_create -> {
+            R.id.btn_update -> {
                 // Close Keyboard
                 currentFocus?.let { view ->
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -117,14 +138,14 @@ class CreateProductActivity : AppCompatActivity(), View.OnClickListener {
                         noTelp = this.supplier!!.noTelp
                     )
 
-                    val createProductBody = CreateProductBody(
+                    val updateProductBody = UpdateProductBody(
                         namaBarang = binding.etProductName.text.toString(),
                         harga = binding.etPrice.text.toString().toDouble(),
                         stok = binding.etStock.text.toString().toInt(),
                         supplier = supplierBody
                     )
 
-                    viewModel.createProduct(token.tokenFormat(), createProductBody)
+                    viewModel.updateProduct(token.tokenFormat(), productId, updateProductBody)
                         .observe(this) { event ->
                             event.getContentIfNotHandled()?.let { resource ->
                                 when (resource) {
@@ -135,7 +156,7 @@ class CreateProductActivity : AppCompatActivity(), View.OnClickListener {
                                             viewModel.setLoading(false)
                                             val intent = Intent()
                                             intent.putExtra(SNACKBAR_VALUE, message)
-                                            setResult(REFRESH_PRODUCT, intent)
+                                            setResult(REFRESH_UPDATED_PRODUCT, intent)
                                             finish()
                                         }
                                     }
@@ -176,4 +197,5 @@ class CreateProductActivity : AppCompatActivity(), View.OnClickListener {
             R.id.iv_back -> finish()
         }
     }
+
 }

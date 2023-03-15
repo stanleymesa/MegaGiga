@@ -14,12 +14,14 @@ import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.ui.ProductAdapter
 import com.stanleymesa.core.utlis.*
 import com.stanleymesa.megagiga.R
 import com.stanleymesa.megagiga.databinding.FragmentProductBinding
 import com.stanleymesa.megagiga.ui.create.CreateProductActivity
 import com.stanleymesa.megagiga.ui.login.LoginActivity
+import com.stanleymesa.megagiga.ui.update.UpdateProductActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -97,14 +99,24 @@ class ProductFragment : Fragment(), ProductAdapter.OnProductClickCallback,
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == REFRESH_PRODUCT) {
-                productAdapter.refresh()
-                scrollToTop()
-                val snackbarValue = result.data?.getStringExtra(SNACKBAR_VALUE)
-                snackbarValue?.let {
-                    Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).setAction("OK") {}.show()
+            when (result.resultCode) {
+                REFRESH_PRODUCT -> {
+                    productAdapter.refresh()
+                    scrollToTop()
+                    val snackbarValue = result.data?.getStringExtra(SNACKBAR_VALUE)
+                    snackbarValue?.let {
+                        Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).setAction("OK") {}.show()
+                    }
+                }
+                REFRESH_UPDATED_PRODUCT -> {
+                    productAdapter.refresh()
+                    val snackbarValue = result.data?.getStringExtra(SNACKBAR_VALUE)
+                    snackbarValue?.let {
+                        Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).setAction("OK") {}.show()
+                    }
                 }
             }
+
         }
 
     override fun onDestroy() {
@@ -115,7 +127,10 @@ class ProductFragment : Fragment(), ProductAdapter.OnProductClickCallback,
     override fun onProductClicked(id: Int) {
     }
 
-    override fun onEditClicked(id: Int) {
+    override fun onEditClicked(product: Product) {
+        val intent = Intent(requireActivity(), UpdateProductActivity::class.java)
+        intent.putExtra(INTENT_PRODUCT, product)
+        resultLauncher.launch(intent)
     }
 
     override fun onRemoveClicked(id: Int) {

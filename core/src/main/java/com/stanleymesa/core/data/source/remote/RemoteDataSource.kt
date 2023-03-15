@@ -10,6 +10,7 @@ import com.stanleymesa.core.data.source.remote.network.ApiServices
 import com.stanleymesa.core.domain.body.CreateProductBody
 import com.stanleymesa.core.domain.body.LoginBody
 import com.stanleymesa.core.domain.body.RegisterBody
+import com.stanleymesa.core.domain.body.UpdateProductBody
 import com.stanleymesa.core.domain.model.Login
 import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Register
@@ -108,6 +109,30 @@ class RemoteDataSource @Inject constructor(
 
             } catch (ex: Exception) {
                 emit(Resource.Error(ex.message ?: "Something went wrong, can't create product"))
+            }
+        }
+
+    fun updateProduct(token: String, productId: Int, updateProductBody: UpdateProductBody): Flow<Resource<String>> =
+        flow {
+            emit(Resource.Loading())
+            try {
+                val request = apiServices.updateProduct(token, productId, updateProductBody)
+                if (request.isSuccessful) {
+                    request.body()?.let { response ->
+                        if (response.status == STATUS_OK && response.data != null)
+                            emit(Resource.Success(response.message))
+                        else
+                            emit(Resource.Error("Something went wrong, can't update product"))
+                    }
+                } else {
+                    if (request.code() == STATUS_UNAUTHORIZED)
+                        emit(Resource.Error(request.code().toString()))
+                    else
+                        emit(Resource.Error("Something went wrong, can't update product"))
+                }
+
+            } catch (ex: Exception) {
+                emit(Resource.Error(ex.message ?: "Something went wrong, can't update product"))
             }
         }
 

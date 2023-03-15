@@ -5,6 +5,7 @@ import com.stanleymesa.core.data.Resource
 import com.stanleymesa.core.domain.body.CreateProductBody
 import com.stanleymesa.core.domain.body.LoginBody
 import com.stanleymesa.core.domain.body.RegisterBody
+import com.stanleymesa.core.domain.body.UpdateProductBody
 import com.stanleymesa.core.domain.model.Login
 import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Register
@@ -26,5 +27,7 @@ interface IRepository {
     fun saveToken(token: String)
 
     fun createProduct(token: String, createProductBody: CreateProductBody): Flow<Resource<String>>
+
+    fun updateProduct(token: String, productId: Int, updateProductBody: UpdateProductBody): Flow<Resource<String>>
 
 }
