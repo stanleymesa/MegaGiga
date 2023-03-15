@@ -28,13 +28,17 @@ class ProductAdapter(private val onProductClickCallback: OnProductClickCallback)
                 tvSupplierName.text = product.supplier?.namaSupplier.toString()
                 tvSupplierHome.text = product.supplier?.alamat.toString()
                 tvSupplierPhone.text = product.supplier?.noTelp.toString()
+
+                ivEdit.setOnClickListener {
+                    onProductClickCallback.onEditClicked(product)
+                }
             }
         }
     }
 
     interface OnProductClickCallback {
         fun onProductClicked(id: Int)
-        fun onEditClicked(id: Int)
+        fun onEditClicked(product: Product)
         fun onRemoveClicked(id: Int)
     }
 

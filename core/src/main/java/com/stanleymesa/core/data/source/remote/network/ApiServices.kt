@@ -4,6 +4,7 @@ import com.stanleymesa.core.data.source.remote.response.*
 import com.stanleymesa.core.domain.body.CreateProductBody
 import com.stanleymesa.core.domain.body.LoginBody
 import com.stanleymesa.core.domain.body.RegisterBody
+import com.stanleymesa.core.domain.body.UpdateProductBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -43,5 +44,13 @@ interface ApiServices {
         @Header("Authorization") token: String,
         @Body createProductBody: CreateProductBody
     ): Response<CreateProductResponse>
+
+    @PUT("barang/update/{id}")
+    @Headers("Accept: application/json")
+    suspend fun updateProduct(
+        @Header("Authorization") token: String,
+        @Path("id") productId: Int,
+        @Body updateProductBody: UpdateProductBody
+    ): Response<UpdateProductResponse>
 
 }

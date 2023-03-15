@@ -6,6 +6,7 @@ import com.stanleymesa.core.data.source.remote.RemoteDataSource
 import com.stanleymesa.core.domain.body.CreateProductBody
 import com.stanleymesa.core.domain.body.LoginBody
 import com.stanleymesa.core.domain.body.RegisterBody
+import com.stanleymesa.core.domain.body.UpdateProductBody
 import com.stanleymesa.core.domain.model.Login
 import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Register
@@ -42,7 +43,8 @@ class Repository @Inject constructor(
     override fun getSupplier(token: String): Flow<PagingData<Supplier>> =
         remoteDataSource.getSupplier(token)
 
-    override fun getToken(): Flow<String> = localDataSource.getToken()
+    override fun getToken(): Flow<String> =
+        localDataSource.getToken()
 
     override fun saveToken(token: String) {
         coroutineScope.launch {
@@ -53,7 +55,16 @@ class Repository @Inject constructor(
     override fun createProduct(
         token: String,
         createProductBody: CreateProductBody,
-    ): Flow<Resource<String>> =
-        remoteDataSource.createProduct(token, createProductBody)
+    ): Flow<Resource<String>> = flow {
+        emitAll(remoteDataSource.createProduct(token, createProductBody))
+    }.flowOn(Dispatchers.IO)
+
+    override fun updateProduct(
+        token: String,
+        productId: Int,
+        updateProductBody: UpdateProductBody,
+    ): Flow<Resource<String>> = flow {
+        emitAll(remoteDataSource.updateProduct(token, productId, updateProductBody))
+    }.flowOn(Dispatchers.IO)
 
 }
