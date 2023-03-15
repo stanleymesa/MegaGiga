@@ -2,6 +2,7 @@ package com.stanleymesa.core.domain.repository
 
 import androidx.paging.PagingData
 import com.stanleymesa.core.data.Resource
+import com.stanleymesa.core.domain.body.CreateProductBody
 import com.stanleymesa.core.domain.body.LoginBody
 import com.stanleymesa.core.domain.body.RegisterBody
 import com.stanleymesa.core.domain.model.Login
@@ -23,5 +24,7 @@ interface IRepository {
     fun getToken(): Flow<String>
 
     fun saveToken(token: String)
+
+    fun createProduct(token: String, createProductBody: CreateProductBody): Flow<Resource<String>>
 
 }

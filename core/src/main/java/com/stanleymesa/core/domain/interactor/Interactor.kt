@@ -2,6 +2,7 @@ package com.stanleymesa.core.domain.interactor
 
 import androidx.paging.PagingData
 import com.stanleymesa.core.data.Resource
+import com.stanleymesa.core.domain.body.CreateProductBody
 import com.stanleymesa.core.domain.body.LoginBody
 import com.stanleymesa.core.domain.body.RegisterBody
 import com.stanleymesa.core.domain.model.Login
@@ -9,17 +10,14 @@ import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Register
 import com.stanleymesa.core.domain.model.Supplier
 import com.stanleymesa.core.domain.repository.IRepository
-import com.stanleymesa.core.domain.usecase.LoginUseCase
-import com.stanleymesa.core.domain.usecase.ProductUseCase
-import com.stanleymesa.core.domain.usecase.RegisterUseCase
-import com.stanleymesa.core.domain.usecase.SupplierUseCase
+import com.stanleymesa.core.domain.usecase.*
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class Interactor @Inject constructor(private val repository: IRepository) : LoginUseCase,
-    RegisterUseCase, ProductUseCase, SupplierUseCase {
+    RegisterUseCase, ProductUseCase, SupplierUseCase, CreateProductUseCase {
 
     override fun login(loginBody: LoginBody): Flow<Resource<Login>> =
         repository.login(loginBody)
@@ -35,6 +33,12 @@ class Interactor @Inject constructor(private val repository: IRepository) : Logi
 
     override fun getSupplier(token: String): Flow<PagingData<Supplier>> =
         repository.getSupplier(token)
+
+    override fun createProduct(
+        token: String,
+        createProductBody: CreateProductBody,
+    ): Flow<Resource<String>> =
+        repository.createProduct(token, createProductBody)
 
     override fun getToken(): Flow<String> =
         repository.getToken()

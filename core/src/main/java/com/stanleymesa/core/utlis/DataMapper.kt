@@ -1,9 +1,6 @@
 package com.stanleymesa.core.utlis
 
-import com.stanleymesa.core.data.source.remote.response.LoginResponse
-import com.stanleymesa.core.data.source.remote.response.ProductItem
-import com.stanleymesa.core.data.source.remote.response.RegisterResponse
-import com.stanleymesa.core.data.source.remote.response.SupplierItem
+import com.stanleymesa.core.data.source.remote.response.*
 import com.stanleymesa.core.domain.model.Login
 import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Register
@@ -59,4 +56,5 @@ object DataMapper {
             alamat = supplierItem.alamat.toString(),
             noTelp = supplierItem.noTelp.toString()
         )
+
 }
