@@ -67,4 +67,12 @@ class Repository @Inject constructor(
         emitAll(remoteDataSource.updateProduct(token, productId, updateProductBody))
     }.flowOn(Dispatchers.IO)
 
+    override fun deleteProduct(token: String, productId: Int): Flow<Resource<String>> = flow {
+        emitAll(remoteDataSource.deleteProduct(token, productId))
+    }.flowOn(Dispatchers.IO)
+
+    override fun getProductById(token: String, productId: Int): Flow<Resource<Product>> = flow {
+        emitAll(remoteDataSource.getProductById(token, productId))
+    }.flowOn(Dispatchers.IO)
+
 }

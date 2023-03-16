@@ -27,7 +27,6 @@ class CreateProductActivity : AppCompatActivity(), View.OnClickListener {
 
     private var _binding: ActivityCreateProductBinding? = null
     private val binding get() = _binding!!
-    private var isAddSupplier = false
     private var supplier: Supplier? = null
     private var token = ""
     private val viewModel: CreateProductViewModel by viewModels()
@@ -70,7 +69,6 @@ class CreateProductActivity : AppCompatActivity(), View.OnClickListener {
                 val supplier = result.data?.getParcelableExtra<Supplier>(INTENT_SUPPLIER)
                 supplier?.let {
                     this.supplier = it
-                    this.isAddSupplier = true
                     binding.contentSupplier.apply {
                         root.isVisible = true
                         tvId.text = it.id.toString()
@@ -87,7 +85,6 @@ class CreateProductActivity : AppCompatActivity(), View.OnClickListener {
             binding.etProductName.text.toString().isNotEmpty() &&
             binding.etPrice.text.toString().isNotEmpty() &&
             binding.etStock.text.toString().isNotEmpty() &&
-            this.isAddSupplier &&
             this.supplier != null &&
             this.token.isNotEmpty()
         ) {

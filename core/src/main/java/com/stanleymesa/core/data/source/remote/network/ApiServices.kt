@@ -53,4 +53,18 @@ interface ApiServices {
         @Body updateProductBody: UpdateProductBody
     ): Response<UpdateProductResponse>
 
+    @DELETE("barang/delete/{id}")
+    @Headers("Accept: application/json")
+    suspend fun deleteProduct(
+        @Header("Authorization") token: String,
+        @Path("id") productId: Int,
+    ): Response<DeleteProductResponse>
+
+    @GET("barang/find-by-id/{id}")
+    @Headers("Accept: application/json")
+    suspend fun getProductById(
+        @Header("Authorization") token: String,
+        @Path("id") productId: Int,
+    ): Response<ProductByIdResponse>
+
 }

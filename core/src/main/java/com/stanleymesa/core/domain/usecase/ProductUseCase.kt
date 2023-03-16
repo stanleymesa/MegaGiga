@@ -11,6 +11,8 @@ interface ProductUseCase {
 
     fun getProduct(token: String): Flow<PagingData<Product>>
 
+    fun deleteProduct(token: String, productId: Int): Flow<Resource<String>>
+
     fun getToken(): Flow<String>
 
 }
