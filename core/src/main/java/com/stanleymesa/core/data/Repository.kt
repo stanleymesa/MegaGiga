@@ -1,12 +1,10 @@
 package com.stanleymesa.core.data
 
+import android.util.Log
 import androidx.paging.PagingData
 import com.stanleymesa.core.data.source.local.LocalDataSource
 import com.stanleymesa.core.data.source.remote.RemoteDataSource
-import com.stanleymesa.core.domain.body.CreateProductBody
-import com.stanleymesa.core.domain.body.LoginBody
-import com.stanleymesa.core.domain.body.RegisterBody
-import com.stanleymesa.core.domain.body.UpdateProductBody
+import com.stanleymesa.core.domain.body.*
 import com.stanleymesa.core.domain.model.Login
 import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Register
@@ -73,6 +71,29 @@ class Repository @Inject constructor(
 
     override fun getProductById(token: String, productId: Int): Flow<Resource<Product>> = flow {
         emitAll(remoteDataSource.getProductById(token, productId))
+    }.flowOn(Dispatchers.IO)
+
+    override fun createSupplier(
+        token: String,
+        supplierBody: SupplierBody,
+    ): Flow<Resource<String>> = flow {
+        emitAll(remoteDataSource.createSupplier(token, supplierBody))
+    }.flowOn(Dispatchers.IO)
+
+    override fun updateSupplier(
+        token: String,
+        supplierId: Int,
+        supplierBody: SupplierBody,
+    ): Flow<Resource<String>> = flow {
+        emitAll(remoteDataSource.updateSupplier(token, supplierId, supplierBody))
+    }.flowOn(Dispatchers.IO)
+
+    override fun getSupplierById(token: String, supplierId: Int): Flow<Resource<Supplier>> = flow {
+        emitAll(remoteDataSource.getSupplierById(token, supplierId))
+    }.flowOn(Dispatchers.IO)
+
+    override fun deleteSupplier(token: String, supplierId: Int): Flow<Resource<String>> = flow {
+        emitAll(remoteDataSource.deleteSupplier(token, supplierId))
     }.flowOn(Dispatchers.IO)
 
 }

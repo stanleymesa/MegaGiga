@@ -22,7 +22,7 @@ class ProductViewModel @Inject constructor(private val productUseCase: ProductUs
     val getTokenResponse: LiveData<Event<String>> = _getTokenResponse
 
     private val _isLoading = MutableLiveData<Event<Boolean>>()
-    val isLoading: LiveData<Event<Boolean>> = _isLoading!!
+    val isLoading: LiveData<Event<Boolean>> = _isLoading
 
     init {
         getToken()
@@ -39,7 +39,7 @@ class ProductViewModel @Inject constructor(private val productUseCase: ProductUs
             Event(it)
         }
 
-    fun getToken() = viewModelScope.launch(Dispatchers.IO) {
+    private fun getToken() = viewModelScope.launch(Dispatchers.IO) {
         productUseCase.getToken().collect {
             _getTokenResponse.postValue(Event(it))
         }

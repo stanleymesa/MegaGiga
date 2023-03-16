@@ -43,7 +43,7 @@ class SupplierActivity : AppCompatActivity(),
     }
 
     private fun observeData() {
-        viewModel.getToken().observe(this) { event ->
+        viewModel.getTokenResponse.observe(this) { event ->
             event.getContentIfNotHandled()?.let { token ->
                 viewModel.getSupplier(token.tokenFormat())
             }
