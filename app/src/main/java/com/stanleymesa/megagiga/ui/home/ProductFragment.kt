@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
 import com.stanleymesa.core.data.Resource
-import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.ui.ProductAdapter
 import com.stanleymesa.core.utlis.*
 import com.stanleymesa.megagiga.R

@@ -10,10 +10,7 @@ import com.stanleymesa.core.data.paging.ProductPagingSource
 import com.stanleymesa.core.data.paging.SupplierPagingSource
 import com.stanleymesa.core.data.source.remote.network.ApiServices
 import com.stanleymesa.core.data.source.remote.response.ProductByIdResponse
-import com.stanleymesa.core.domain.body.CreateProductBody
-import com.stanleymesa.core.domain.body.LoginBody
-import com.stanleymesa.core.domain.body.RegisterBody
-import com.stanleymesa.core.domain.body.UpdateProductBody
+import com.stanleymesa.core.domain.body.*
 import com.stanleymesa.core.domain.model.Login
 import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Register
@@ -175,7 +172,7 @@ class RemoteDataSource @Inject constructor(
                 val request = apiServices.getProductById(token, productId)
                 if (request.isSuccessful) {
                     request.body()?.let { response ->
-                        if (response.status == STATUS_OK && response.message == GET_PRODUCT_BY_ID_SUCCESS && response.data != null) {
+                        if (response.status == STATUS_OK && response.data != null) {
                             val data = DataMapper.mapProductItemToProduct(response.data)
                             emit(Resource.Success(data))
                         } else {
@@ -191,6 +188,108 @@ class RemoteDataSource @Inject constructor(
 
             } catch (ex: Exception) {
                 emit(Resource.Error(ex.message ?: "Something went wrong, can't find product"))
+            }
+        }
+
+    fun createSupplier(token: String, supplierBody: SupplierBody): Flow<Resource<String>> =
+        flow {
+            emit(Resource.Loading())
+            try {
+                val request = apiServices.createSupplier(token, supplierBody)
+                if (request.isSuccessful) {
+                    request.body()?.let { response ->
+                        if (response.status == STATUS_OK && response.data != null)
+                            emit(Resource.Success(response.message))
+                        else
+                            emit(Resource.Error("Something went wrong, can't create supplier"))
+                    }
+                } else {
+                    if (request.code() == STATUS_UNAUTHORIZED)
+                        emit(Resource.Error(request.code().toString()))
+                    else
+                        emit(Resource.Error("Something went wrong, can't create supplier"))
+                }
+
+            } catch (ex: Exception) {
+                emit(Resource.Error(ex.message ?: "Something went wrong, can't create supplier"))
+            }
+        }
+
+    fun updateSupplier(
+        token: String,
+        supplierId: Int,
+        supplierBody: SupplierBody,
+    ): Flow<Resource<String>> =
+        flow {
+            emit(Resource.Loading())
+            try {
+                val request = apiServices.updateSupplier(token, supplierId, supplierBody)
+                if (request.isSuccessful) {
+                    request.body()?.let { response ->
+                        if (response.status == STATUS_OK && response.data != null)
+                            emit(Resource.Success(response.message))
+                        else
+                            emit(Resource.Error("Something went wrong, can't update supplier"))
+                    }
+                } else {
+                    if (request.code() == STATUS_UNAUTHORIZED)
+                        emit(Resource.Error(request.code().toString()))
+                    else
+                        emit(Resource.Error("Something went wrong, can't update supplier"))
+                }
+
+            } catch (ex: Exception) {
+                emit(Resource.Error(ex.message ?: "Something went wrong, can't update supplier"))
+            }
+        }
+
+    fun getSupplierById(token: String, supplierId: Int): Flow<Resource<Supplier>> =
+        flow {
+            emit(Resource.Loading())
+            try {
+                val request = apiServices.getSupplierById(token, supplierId)
+                if (request.isSuccessful) {
+                    request.body()?.let { response ->
+                        if (response.status == STATUS_OK && response.data != null) {
+                            val data = DataMapper.mapSupplierNotNullToSupplier(response.data)
+                            emit(Resource.Success(data))
+                        } else {
+                            emit(Resource.Error("Something went wrong, can't find supplier"))
+                        }
+                    }
+                } else {
+                    if (request.code() == STATUS_UNAUTHORIZED)
+                        emit(Resource.Error(request.code().toString()))
+                    else
+                        emit(Resource.Error("Something went wrong, can't find supplier"))
+                }
+
+            } catch (ex: Exception) {
+                emit(Resource.Error(ex.message ?: "Something went wrong, can't find supplier"))
+            }
+        }
+
+    fun deleteSupplier(token: String, supplierId: Int): Flow<Resource<String>> =
+        flow {
+            emit(Resource.Loading())
+            try {
+                val request = apiServices.deleteSupplier(token, supplierId)
+                if (request.isSuccessful) {
+                    request.body()?.let { response ->
+                        if (response.status == STATUS_OK && response.message == DELETE_SUCCESS)
+                            emit(Resource.Success(response.message))
+                        else
+                            emit(Resource.Error("Something went wrong, can't delete supplier"))
+                    }
+                } else {
+                    if (request.code() == STATUS_UNAUTHORIZED)
+                        emit(Resource.Error(request.code().toString()))
+                    else
+                        emit(Resource.Error("Something went wrong, can't delete supplier"))
+                }
+
+            } catch (ex: Exception) {
+                emit(Resource.Error(ex.message ?: "Something went wrong, can't delete supplier"))
             }
         }
 

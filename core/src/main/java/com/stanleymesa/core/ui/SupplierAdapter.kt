@@ -25,6 +25,14 @@ class SupplierAdapter(private val onSupplierClickCallback: OnSupplierClickCallba
                 tvSupplierName.text = supplier.namaSupplier
                 tvSupplierHome.text = supplier.alamat
                 tvSupplierPhone.text = supplier.noTelp
+
+                ivEdit.setOnClickListener {
+                    onSupplierClickCallback.onEditClicked(supplier.id)
+                }
+
+                ivRemove.setOnClickListener {
+                    onSupplierClickCallback.onRemoveClicked(supplier.id)
+                }
             }
         }
     }

@@ -2,10 +2,7 @@ package com.stanleymesa.core.domain.interactor
 
 import androidx.paging.PagingData
 import com.stanleymesa.core.data.Resource
-import com.stanleymesa.core.domain.body.CreateProductBody
-import com.stanleymesa.core.domain.body.LoginBody
-import com.stanleymesa.core.domain.body.RegisterBody
-import com.stanleymesa.core.domain.body.UpdateProductBody
+import com.stanleymesa.core.domain.body.*
 import com.stanleymesa.core.domain.model.Login
 import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Register
@@ -18,7 +15,8 @@ import javax.inject.Singleton
 
 @Singleton
 class Interactor @Inject constructor(private val repository: IRepository) : LoginUseCase,
-    RegisterUseCase, ProductUseCase, SupplierUseCase, CreateProductUseCase, UpdateProductUseCase {
+    RegisterUseCase, ProductUseCase, SupplierUseCase, CreateProductUseCase, UpdateProductUseCase,
+    CreateSupplierUseCase, UpdateSupplierUseCase {
 
     override fun login(loginBody: LoginBody): Flow<Resource<Login>> =
         repository.login(loginBody)
@@ -38,6 +36,9 @@ class Interactor @Inject constructor(private val repository: IRepository) : Logi
     override fun getSupplier(token: String): Flow<PagingData<Supplier>> =
         repository.getSupplier(token)
 
+    override fun deleteSupplier(token: String, supplierId: Int): Flow<Resource<String>> =
+        repository.deleteSupplier(token, supplierId)
+
     override fun createProduct(
         token: String,
         createProductBody: CreateProductBody,
@@ -53,6 +54,19 @@ class Interactor @Inject constructor(private val repository: IRepository) : Logi
 
     override fun getProductById(token: String, productId: Int): Flow<Resource<Product>> =
         repository.getProductById(token, productId)
+
+    override fun createSupplier(token: String, supplierBody: SupplierBody): Flow<Resource<String>> =
+        repository.createSupplier(token, supplierBody)
+
+    override fun updateSupplier(
+        token: String,
+        supplierId: Int,
+        supplierBody: SupplierBody,
+    ): Flow<Resource<String>> =
+        repository.updateSupplier(token, supplierId, supplierBody)
+
+    override fun getSupplierById(token: String, supplierId: Int): Flow<Resource<Supplier>> =
+        repository.getSupplierById(token, supplierId)
 
     override fun getToken(): Flow<String> =
         repository.getToken()

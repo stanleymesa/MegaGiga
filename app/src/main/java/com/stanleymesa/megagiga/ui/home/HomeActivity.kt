@@ -2,6 +2,7 @@ package com.stanleymesa.megagiga.ui.home
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.google.android.material.tabs.TabLayoutMediator
 import com.stanleymesa.megagiga.R
 import com.stanleymesa.megagiga.databinding.ActivityHomeBinding
@@ -24,6 +25,7 @@ class HomeActivity : AppCompatActivity() {
     private fun init() {
         setTabWithViewPager()
         binding.toolbar.tvTitle.text = getString(R.string.megagiga)
+        binding.toolbar.ivBack.isVisible = false
     }
 
     private fun setTabWithViewPager() {
