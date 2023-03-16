@@ -2,9 +2,8 @@ package com.stanleymesa.megagiga.ui.update
 
 import androidx.lifecycle.*
 import com.stanleymesa.core.data.Resource
-import com.stanleymesa.core.domain.body.CreateProductBody
 import com.stanleymesa.core.domain.body.UpdateProductBody
-import com.stanleymesa.core.domain.usecase.CreateProductUseCase
+import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.usecase.UpdateProductUseCase
 import com.stanleymesa.core.utlis.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +18,9 @@ class UpdateProductViewModel @Inject constructor(private val updateProductUseCas
     private val _getTokenResponse = MutableLiveData<Event<String>>()
     val getTokenResponse: LiveData<Event<String>> = _getTokenResponse
 
+    private val _getProductByIdResponse = MutableLiveData<Event<Resource<Product>>>()
+    val getProductByIdResponse: LiveData<Event<Resource<Product>>> = _getProductByIdResponse
+
     private val _isLoading = MutableLiveData<Event<Boolean>>()
     val isLoading: LiveData<Event<Boolean>> = _isLoading
 
@@ -29,6 +31,12 @@ class UpdateProductViewModel @Inject constructor(private val updateProductUseCas
     private fun getToken() = viewModelScope.launch(Dispatchers.IO) {
         updateProductUseCase.getToken().collect {
             _getTokenResponse.postValue(Event(it))
+        }
+    }
+
+    fun getProductById(token: String, productId: Int) = viewModelScope.launch(Dispatchers.IO) {
+        updateProductUseCase.getProductById(token, productId).collect {
+            _getProductByIdResponse.postValue(Event(it))
         }
     }
 

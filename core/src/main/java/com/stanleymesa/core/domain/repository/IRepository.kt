@@ -30,4 +30,8 @@ interface IRepository {
 
     fun updateProduct(token: String, productId: Int, updateProductBody: UpdateProductBody): Flow<Resource<String>>
 
+    fun deleteProduct(token: String, productId: Int): Flow<Resource<String>>
+
+    fun getProductById(token: String, productId: Int): Flow<Resource<Product>>
+
 }

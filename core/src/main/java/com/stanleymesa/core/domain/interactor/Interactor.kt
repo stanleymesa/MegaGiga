@@ -32,6 +32,9 @@ class Interactor @Inject constructor(private val repository: IRepository) : Logi
     override fun getProduct(token: String): Flow<PagingData<Product>> =
         repository.getProduct(token)
 
+    override fun deleteProduct(token: String, productId: Int): Flow<Resource<String>> =
+        repository.deleteProduct(token, productId)
+
     override fun getSupplier(token: String): Flow<PagingData<Supplier>> =
         repository.getSupplier(token)
 
@@ -47,6 +50,9 @@ class Interactor @Inject constructor(private val repository: IRepository) : Logi
         updateProductBody: UpdateProductBody,
     ): Flow<Resource<String>> =
         repository.updateProduct(token, productId, updateProductBody)
+
+    override fun getProductById(token: String, productId: Int): Flow<Resource<Product>> =
+        repository.getProductById(token, productId)
 
     override fun getToken(): Flow<String> =
         repository.getToken()

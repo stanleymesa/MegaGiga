@@ -2,18 +2,16 @@ package com.stanleymesa.megagiga.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.paging.map
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.stanleymesa.core.data.Resource
 import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.ui.ProductAdapter
 import com.stanleymesa.core.utlis.*
@@ -31,6 +29,7 @@ class ProductFragment : Fragment(), ProductAdapter.OnProductClickCallback,
     private var _binding: FragmentProductBinding? = null
     private val binding get() = _binding!!
     private val productAdapter = ProductAdapter(this)
+    private var token = ""
     private val viewModel: ProductViewModel by viewModels()
 
     override fun onCreateView(
@@ -56,7 +55,7 @@ class ProductFragment : Fragment(), ProductAdapter.OnProductClickCallback,
     private fun observeData() {
         viewModel.getTokenResponse.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled()?.let { token ->
-                Log.e("TOKEN", token)
+                this.token = token
                 viewModel.getProduct(token.tokenFormat())
             }
         }
@@ -65,6 +64,12 @@ class ProductFragment : Fragment(), ProductAdapter.OnProductClickCallback,
             event.getContentIfNotHandled()?.let { data ->
                 productAdapter.submitData(lifecycle, data)
 
+            }
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let { isLoading ->
+                binding.progressBar.isVisible = isLoading
             }
         }
     }
@@ -79,40 +84,34 @@ class ProductFragment : Fragment(), ProductAdapter.OnProductClickCallback,
         }
     }
 
-    private fun scrollToTop() {
-        productAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {}
-
-            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {}
-
-            override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {}
-
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                binding.rvProduct.scrollToPosition(0)
-            }
-
-            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {}
-
-            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {}
-        })
-    }
-
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
                 REFRESH_PRODUCT -> {
                     productAdapter.refresh()
-                    scrollToTop()
                     val snackbarValue = result.data?.getStringExtra(SNACKBAR_VALUE)
                     snackbarValue?.let {
-                        Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).setAction("OK") {}.show()
+                        Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT)
+                            .setAction("Refresh") {
+                                binding.rvProduct.smoothScrollToPosition(0)
+                            }.show()
                     }
                 }
                 REFRESH_UPDATED_PRODUCT -> {
                     productAdapter.refresh()
                     val snackbarValue = result.data?.getStringExtra(SNACKBAR_VALUE)
                     snackbarValue?.let {
-                        Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).setAction("OK") {}.show()
+                        Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).setAction("OK") {}
+                            .show()
+                    }
+                }
+
+                REFRESH_NOTFOUND_PRODUCT -> {
+                    productAdapter.refresh()
+                    val snackbarValue = result.data?.getStringExtra(SNACKBAR_VALUE)
+                    snackbarValue?.let {
+                        Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).setAction("OK") {}
+                            .show()
                     }
                 }
             }
@@ -127,29 +126,65 @@ class ProductFragment : Fragment(), ProductAdapter.OnProductClickCallback,
     override fun onProductClicked(id: Int) {
     }
 
-    override fun onEditClicked(product: Product) {
+    override fun onEditClicked(id: Int) {
         val intent = Intent(requireActivity(), UpdateProductActivity::class.java)
-        intent.putExtra(INTENT_PRODUCT, product)
+        intent.putExtra(INTENT_PRODUCT_ID, id)
         resultLauncher.launch(intent)
     }
 
     override fun onRemoveClicked(id: Int) {
-    }
+        viewModel.deleteProduct(token.tokenFormat(), id).observe(this) { event ->
+            event.getContentIfNotHandled()?.let { resource ->
+                when (resource) {
+                    is Resource.Loading -> viewModel.setLoading(true)
 
-    override fun onTokenExpired() {
-        Toast.makeText(requireContext(),
-            "Session expired, need to login again!",
-            Toast.LENGTH_SHORT).show()
-        startActivity(Intent(requireActivity(), LoginActivity::class.java))
-        requireActivity().finish()
-    }
+                    is Resource.Success -> {
+                        resource.data?.let { message ->
+                            Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT)
+                                .setAction("OK") {}
+                                .show()
+                            productAdapter.refresh()
+                            viewModel.setLoading(false)
+                        }
+                    }
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.fab_product -> {
-                resultLauncher.launch(Intent(requireActivity(), CreateProductActivity::class.java))
+                    else -> {
+                        resource.message?.let { error ->
+                            viewModel.setLoading(false)
+                            if (error == STATUS_UNAUTHORIZED.toString()) {
+                                Toast.makeText(requireContext(),
+                                    "Session expired, need to login again!",
+                                    Toast.LENGTH_SHORT).show()
+                                startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                                requireActivity().finish()
+                            } else {
+                                Snackbar.make(binding.root, error, Snackbar.LENGTH_SHORT)
+                                    .setAction("OK") {}
+                                    .show()
+                                productAdapter.refresh()
+                            }
+                        }
+
+                }
             }
         }
     }
+}
+
+override fun onTokenExpired() {
+    Toast.makeText(requireContext(),
+        "Session expired, need to login again!",
+        Toast.LENGTH_SHORT).show()
+    startActivity(Intent(requireActivity(), LoginActivity::class.java))
+    requireActivity().finish()
+}
+
+override fun onClick(v: View?) {
+    when (v?.id) {
+        R.id.fab_product -> {
+            resultLauncher.launch(Intent(requireActivity(), CreateProductActivity::class.java))
+        }
+    }
+}
 
 }

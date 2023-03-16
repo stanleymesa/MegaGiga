@@ -2,6 +2,7 @@ package com.stanleymesa.megagiga.ui.home
 
 import androidx.lifecycle.*
 import androidx.paging.PagingData
+import com.stanleymesa.core.data.Resource
 import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.usecase.ProductUseCase
 import com.stanleymesa.core.utlis.Event
@@ -20,6 +21,9 @@ class ProductViewModel @Inject constructor(private val productUseCase: ProductUs
     private val _getTokenResponse = MutableLiveData<Event<String>>()
     val getTokenResponse: LiveData<Event<String>> = _getTokenResponse
 
+    private val _isLoading = MutableLiveData<Event<Boolean>>()
+    val isLoading: LiveData<Event<Boolean>> = _isLoading!!
+
     init {
         getToken()
     }
@@ -30,10 +34,18 @@ class ProductViewModel @Inject constructor(private val productUseCase: ProductUs
         }
     }
 
+    fun deleteProduct(token: String, productId: Int): LiveData<Event<Resource<String>>> =
+        productUseCase.deleteProduct(token, productId).asLiveData().map {
+            Event(it)
+        }
+
     fun getToken() = viewModelScope.launch(Dispatchers.IO) {
         productUseCase.getToken().collect {
             _getTokenResponse.postValue(Event(it))
         }
     }
+
+    fun setLoading(isLoading: Boolean) =
+        _isLoading.postValue(Event(isLoading))
 
 }
