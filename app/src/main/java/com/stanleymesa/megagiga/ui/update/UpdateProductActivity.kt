@@ -14,7 +14,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.stanleymesa.core.data.Resource
 import com.stanleymesa.core.domain.body.SupplierBody
 import com.stanleymesa.core.domain.body.UpdateProductBody
-import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Supplier
 import com.stanleymesa.core.utlis.*
 import com.stanleymesa.megagiga.R

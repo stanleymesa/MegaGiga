@@ -2,10 +2,7 @@ package com.stanleymesa.core.domain.repository
 
 import androidx.paging.PagingData
 import com.stanleymesa.core.data.Resource
-import com.stanleymesa.core.domain.body.CreateProductBody
-import com.stanleymesa.core.domain.body.LoginBody
-import com.stanleymesa.core.domain.body.RegisterBody
-import com.stanleymesa.core.domain.body.UpdateProductBody
+import com.stanleymesa.core.domain.body.*
 import com.stanleymesa.core.domain.model.Login
 import com.stanleymesa.core.domain.model.Product
 import com.stanleymesa.core.domain.model.Register
@@ -33,5 +30,13 @@ interface IRepository {
     fun deleteProduct(token: String, productId: Int): Flow<Resource<String>>
 
     fun getProductById(token: String, productId: Int): Flow<Resource<Product>>
+
+    fun createSupplier(token: String, supplierBody: SupplierBody): Flow<Resource<String>>
+
+    fun updateSupplier(token: String, supplierId: Int, supplierBody: SupplierBody): Flow<Resource<String>>
+
+    fun getSupplierById(token: String, supplierId: Int): Flow<Resource<Supplier>>
+
+    fun deleteSupplier(token: String, supplierId: Int): Flow<Resource<String>>
 
 }

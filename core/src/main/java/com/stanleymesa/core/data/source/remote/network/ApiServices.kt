@@ -1,10 +1,7 @@
 package com.stanleymesa.core.data.source.remote.network
 
 import com.stanleymesa.core.data.source.remote.response.*
-import com.stanleymesa.core.domain.body.CreateProductBody
-import com.stanleymesa.core.domain.body.LoginBody
-import com.stanleymesa.core.domain.body.RegisterBody
-import com.stanleymesa.core.domain.body.UpdateProductBody
+import com.stanleymesa.core.domain.body.*
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -66,5 +63,34 @@ interface ApiServices {
         @Header("Authorization") token: String,
         @Path("id") productId: Int,
     ): Response<ProductByIdResponse>
+
+    @POST("supplier/create")
+    @Headers("Accept: application/json")
+    suspend fun createSupplier(
+        @Header("Authorization") token: String,
+        @Body supplierBody: SupplierBody
+    ): Response<CreateSupplierResponse>
+
+    @PUT("supplier/update/{id}")
+    @Headers("Accept: application/json")
+    suspend fun updateSupplier(
+        @Header("Authorization") token: String,
+        @Path("id") supplierId: Int,
+        @Body supplierBody: SupplierBody
+    ): Response<UpdateSupplierResponse>
+
+    @GET("supplier/find-by-id/{id}")
+    @Headers("Accept: application/json")
+    suspend fun getSupplierById(
+        @Header("Authorization") token: String,
+        @Path("id") supplierId: Int,
+    ): Response<SupplierByIdResponse>
+
+    @DELETE("supplier/delete/{id}")
+    @Headers("Accept: application/json")
+    suspend fun deleteSupplier(
+        @Header("Authorization") token: String,
+        @Path("id") supplierId: Int,
+    ): Response<DeleteSupplierResponse>
 
 }
