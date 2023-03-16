@@ -42,7 +42,6 @@ class UpdateProductActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun init() {
-        getIntentProduct()
         observeData()
         binding.toolbar.tvTitle.text = "Update Product"
         binding.toolbar.ivBack.isVisible = true
@@ -51,38 +50,67 @@ class UpdateProductActivity : AppCompatActivity(), View.OnClickListener {
         binding.toolbar.ivBack.setOnClickListener(this)
     }
 
-    private fun getIntentProduct() {
-        val productIntent = intent.getParcelableExtra<Product>(INTENT_PRODUCT)
-        productIntent?.let { product ->
-            this.productId = product.id
-            binding.etProductName.setText(product.namaBarang)
-            binding.etPrice.setText(product.harga.toInt().toString())
-            binding.etStock.setText(product.stok.toString())
-
-            product.supplier?.let { supplier ->
-                this.supplier = supplier
-                binding.contentSupplier.apply {
-                    root.isVisible = true
-                    tvId.text = supplier.id.toString()
-                    tvSupplierName.text = supplier.namaSupplier
-                    tvSupplierHome.text = supplier.alamat
-                    tvSupplierPhone.text = supplier.noTelp
-                }
-            }
-        }
-    }
-
     private fun observeData() {
 
         viewModel.getTokenResponse.observe(this) { event ->
             event.getContentIfNotHandled()?.let { token ->
                 this.token = token
+
+                this.productId = intent.getIntExtra(INTENT_PRODUCT_ID, 0)
+                viewModel.getProductById(token.tokenFormat(), productId)
+            }
+        }
+
+        viewModel.getProductByIdResponse.observe(this) { event ->
+            event.getContentIfNotHandled()?.let { resource ->
+                when (resource) {
+                    is Resource.Loading -> viewModel.setLoading(true)
+
+                    is Resource.Success -> {
+                        resource.data?.let { product ->
+                            binding.etProductName.setText(product.namaBarang)
+                            binding.etPrice.setText(product.harga.toInt().toString())
+                            binding.etStock.setText(product.stok.toString())
+
+                            product.supplier?.let { supplier ->
+                                this.supplier = supplier
+                                binding.contentSupplier.apply {
+                                    root.isVisible = true
+                                    tvId.text = supplier.id.toString()
+                                    tvSupplierName.text = supplier.namaSupplier
+                                    tvSupplierHome.text = supplier.alamat
+                                    tvSupplierPhone.text = supplier.noTelp
+                                }
+                            }
+                            viewModel.setLoading(false)
+                        }
+                    }
+
+                    else -> {
+                        resource.message?.let { error ->
+                            viewModel.setLoading(false)
+                            if (error == STATUS_UNAUTHORIZED.toString()) {
+                                Toast.makeText(this,
+                                    "Session expired, need to login again!",
+                                    Toast.LENGTH_SHORT).show()
+                                startActivity(Intent(this, LoginActivity::class.java))
+                                finish()
+                            } else {
+                                val intent = Intent()
+                                intent.putExtra(SNACKBAR_VALUE, error)
+                                setResult(REFRESH_NOTFOUND_PRODUCT, intent)
+                                finish()
+                            }
+                        }
+                    }
+                }
             }
         }
 
         viewModel.isLoading.observe(this) { event ->
             event.getContentIfNotHandled()?.let { isLoading ->
                 binding.progressBar.isVisible = isLoading
+                binding.btnUpdate.isEnabled = !isLoading
             }
         }
     }
